@@ -26,7 +26,7 @@ export class NumberGenerator extends EventEmitter
 
         this.lastNumber = firstNumber;
 
-        this.setInterval(this.generateNumber.bind(this), 1000);
+        this.setInterval(this._generateNumber.bind(this), 1000);
     }
 
     _generateNumber() {
