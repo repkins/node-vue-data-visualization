@@ -15,13 +15,13 @@ export class NumberGenerator extends EventEmitter
 
         this.once('newListener', (evtName, listener) => {
             if (evtName === 'number') {
-                this.onNumberNewListener(listener);
+                this._onNumberNewListener(listener);
             }
         });
     }
 
-    onNumberNewListener(listener) {
-        var firstNumber = this.getRandomNumber();
+    _onNumberNewListener(listener) {
+        var firstNumber = this._getRandomNumber();
         listener(firstNumber);
 
         this.lastNumber = firstNumber;
@@ -29,25 +29,25 @@ export class NumberGenerator extends EventEmitter
         this.setInterval(this.generateNumber.bind(this), 1000);
     }
 
-    generateNumber() {
+    _generateNumber() {
         let newNumber;
         do {
-            newNumber = this.getRandomNumber();
+            newNumber = this._getRandomNumber();
         } 
         while (Math.abs(newNumber - this.lastNumber) > 30);
 
-        this.emitNumber(newNumber);
+        this._emitNumber(newNumber);
 
         this.lastNumber = newNumber;
     }
 
-    getRandomNumber()
+    _getRandomNumber()
     {
         let randomNumber = this.random() * 100;
         return randomNumber;
     }
 
-    emitNumber(number)
+    _emitNumber(number)
     {
         this.emit('number', number);
     }
