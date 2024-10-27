@@ -1,4 +1,6 @@
 import { WebSocketServer } from "ws";
+import "dotenv/config";
+
 import { NumberGenerator } from "./number-generator.js";
 
 const webSocketServerOptions = {
