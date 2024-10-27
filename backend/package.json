@@ -1,0 +1,21 @@
+{
+  "name": "data-visualization",
+  "version": "1.0.0",
+  "description": "Data visualization server",
+  "author": "repkins",
+  "license": "ISC",
+  "type": "module",
+  "scripts": {
+    "start": "node ./src/server.js",
+    "nodemon": "nodemon"
+  },
+  "dependencies": {
+    "ws": "^8.18.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.13.0",
+    "eslint": "^9.13.0",
+    "globals": "^15.11.0",
+    "nodemon": "^3.1.7"
+  }
+}
