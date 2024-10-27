@@ -15,12 +15,12 @@ export class NumberGenerator extends EventEmitter
 
         this.once('newListener', (evtName, listener) => {
             if (evtName === 'number') {
-                this._onNumberNewListener(listener);
+                this._onNumberFirstListener(listener);
             }
         });
     }
 
-    _onNumberNewListener(listener) {
+    _onNumberFirstListener(listener) {
         var firstNumber = this._getRandomNumber();
         listener(firstNumber);
 
