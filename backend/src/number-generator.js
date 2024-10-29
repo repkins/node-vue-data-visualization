@@ -21,34 +21,39 @@ export class NumberGenerator extends EventEmitter
     }
 
     _onNumberFirstListener(listener) {
-        var firstNumber = this._getRandomNumber();
-        listener(firstNumber);
+        var firstNumberEntry = this._getRandomNumber();
+        listener(firstNumberEntry);
 
-        this.lastNumber = firstNumber;
+        this.lastNumber = firstNumberEntry.value;
 
         this.setInterval(this._generateNumber.bind(this), 1000);
     }
 
     _generateNumber() {
-        let newNumber;
+        let newNumberEntry;
         do {
-            newNumber = this._getRandomNumber();
+            newNumberEntry = this._getRandomNumber();
         } 
-        while (Math.abs(newNumber - this.lastNumber) > 30);
+        while (Math.abs(newNumberEntry.value - this.lastNumber) > 30);
 
-        this._emitNumber(newNumber);
+        this._emitNumber(newNumberEntry);
 
-        this.lastNumber = newNumber;
+        this.lastNumber = newNumberEntry.value;
     }
 
     _getRandomNumber()
     {
-        let randomNumber = this.random() * 100;
-        return randomNumber;
+        const randomNumber = this.random() * 100;
+        const timestamp = Date.now();
+
+        return {
+            value: randomNumber, 
+            timestamp
+        };
     }
 
-    _emitNumber(number)
+    _emitNumber(numberEntry)
     {
-        this.emit('number', number);
+        this.emit('number', numberEntry);
     }
 }

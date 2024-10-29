@@ -12,6 +12,13 @@
                 tooltip: {
                     enabled: false
                 }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    min: 0,
+                    max: 100
+                }
             }
         }
     };
@@ -33,10 +40,9 @@
             data: {
                 handler(newValue) {
                     this.chart.data = {
-                        labels: newValue.map(r => r.x),
                         datasets: [
                             {
-                                data: newValue.map(r => r.y)
+                                data: [ ...newValue ],
                             }
                         ]
                     }

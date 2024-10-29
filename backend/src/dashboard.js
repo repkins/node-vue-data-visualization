@@ -13,9 +13,9 @@ export class DashboardController
      */
     clientConnected(ws)
     {
-        const onGeneratedNumber = number =>
+        const onGeneratedNumber = numberEntry =>
         {
-            ws.send(number);
+            ws.send(JSON.stringify(numberEntry));
         }
 
         this._numberGenerator.on('number', onGeneratedNumber);

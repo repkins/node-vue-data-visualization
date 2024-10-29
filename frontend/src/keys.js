@@ -1,0 +1,1 @@
+export const ApiHostKey = Symbol
