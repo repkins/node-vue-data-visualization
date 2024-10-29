@@ -1,17 +1,15 @@
 <script>
-    import TheWelcome from './components/TheWelcome.vue'
+    import AppDashboard from './components/AppDashboard.vue'
 
     export default {
         components: {
-            TheWelcome
+            AppDashboard
         }
     }
 </script>
 
 <template>
-    <div class="container py-4 px-3 mx-auto">
-        <TheWelcome></TheWelcome>
+    <div class="container py-4 px-3">
+        <AppDashboard />
     </div>
 </template>
-
-<style scoped></style>
