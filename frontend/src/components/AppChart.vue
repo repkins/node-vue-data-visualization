@@ -1,5 +1,7 @@
 <script>
     import Chart from 'chart.js/auto'
+    
+    import 'chartjs-adapter-date-fns';
 
     const chartConfig = {
         type: 'line',
@@ -8,12 +10,18 @@
             plugins: {
                 legend: {
                     display: false
-                },
-                tooltip: {
-                    enabled: false
                 }
             },
-            scales: {
+            scales: {                
+                x: {
+                    type: 'time',
+                    ticks: {
+                        source: 'data',
+                        callback: function(value) {
+                            return new Date(value).toLocaleTimeString();
+                        }
+                    }
+                },
                 y: {
                     beginAtZero: true,
                     min: 0,
@@ -28,7 +36,6 @@
         data() {
             return {
                 chartConfig,
-
             }
         },
         mounted() {

@@ -25,7 +25,7 @@
 
                 const newDataPoints = numberEntries
                     .map(({ value, date }) => ({ 
-                        x: date.toLocaleTimeString(), 
+                        x: date,
                         y: value 
                     }));
 
