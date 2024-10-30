@@ -3,6 +3,7 @@ import "dotenv/config";
 
 import { NumberGenerator } from "./number-generator.js";
 import { DashboardController } from "./dashboard.js";
+import { NumbersRepository } from "./numbers-repository.js";
 
 const webSocketServerOptions = {
     port: process.env.PORT || 8080
@@ -14,7 +15,8 @@ const wss = new WebSocketServer(webSocketServerOptions, () => {
 
 wss.on('connection', onSocketConnection);
 
-const numberGenerator = new NumberGenerator(Math.random, setInterval);
+const numbersRepository = new NumbersRepository();
+const numberGenerator = new NumberGenerator(Math.random, setInterval, numbersRepository);
 const dashboardController = new DashboardController(numberGenerator);
 
 /**
