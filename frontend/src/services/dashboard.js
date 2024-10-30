@@ -22,6 +22,7 @@ export class Dashboard extends EventTarget {
         const socket = new WebSocket(`ws://${this.apiHost}`);
 
         socket.addEventListener('error', this._handleSocketError.bind(this));
+        socket.addEventListener('close', this._handleSocketClose.bind(this));
         socket.addEventListener('message', this._handleSocketMessage.bind(this));
 
         return socket;
@@ -29,6 +30,10 @@ export class Dashboard extends EventTarget {
 
     _handleSocketError(err) {
         console.error('Could not connect to API backend', err);
+    }
+
+    _handleSocketClose() {
+        this._createSocket();
     }
 
     _handleSocketMessage(evt) {
