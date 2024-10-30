@@ -37,7 +37,7 @@ export class NumberGenerator extends EventEmitter
     {
         switch (evtName) {
             case 'numbers': 
-                listener(this._numbersRepository.getNumberEntries());
+                this._numbersRepository.getNumberEntries().then(listener);
                 break;
             case 'rangeRatio':
                 listener(this._rangeRatio);
@@ -45,11 +45,11 @@ export class NumberGenerator extends EventEmitter
         }
     }
 
-    _generateNumber() {
+    async _generateNumber() {
         let newNumberEntry = this._getRandomNumber();
 
-        if (this._numbersRepository.hasNumberEntries()) {
-            const lastNumberEntry = this._numbersRepository.getLastNumberEntry();
+        if (await this._numbersRepository.hasNumberEntries()) {
+            const lastNumberEntry = await this._numbersRepository.getLastNumberEntry();
 
             let rationedRange = lastNumberEntry.value * this._rangeRatio;
             while (Math.abs(newNumberEntry.value - lastNumberEntry.value) > rationedRange)
@@ -59,10 +59,11 @@ export class NumberGenerator extends EventEmitter
         }
 
         this._emitNumber(newNumberEntry);
-        this._numbersRepository.addNumberEntry(newNumberEntry);
+        await this._numbersRepository.addNumberEntry(newNumberEntry);
 
-        if (this._numbersRepository.getNumberEntriesCount() > MaxNumbers) {
-            this._numbersRepository.removeFirstNumbers(this._numbersRepository.getNumberEntriesCount() - MaxNumbers);
+        const numberEntriesCount = await this._numbersRepository.getNumberEntriesCount();
+        if (numberEntriesCount > MaxNumbers) {
+            await this._numbersRepository.removeFirstNumbers(numberEntriesCount - MaxNumbers);
         }
     }
 
