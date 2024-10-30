@@ -11,6 +11,7 @@
         methods: {
             onSubmit() {
                 this.$emit('newRange', this.newRange);
+                this.newRange = null;
             }
         }
     };

@@ -23,8 +23,13 @@ export class Dashboard extends EventTarget {
 
     _handleSocketMessage(evt) {
         const msgData = JSON.parse(evt.data);
-        if (msgData.type === 'number') {
-            this._handleNumberMessage(msgData.payload);
+        switch (msgData.type) {
+            case 'number': 
+                this._handleNumberMessage(msgData.payload);
+                break;
+            case 'range':
+                this._handleRangeMessage(msgData.payload);
+                break;
         }
     }
 
@@ -34,6 +39,17 @@ export class Dashboard extends EventTarget {
         const numberEntry = { value, date: new Date(timestamp) };
 
         const numberEvent = new CustomEvent("number", { detail: numberEntry });
+        this.dispatchEvent(numberEvent);
+    }
+
+    _handleRangeMessage(rangeMessage) { 
+        const { percentage } = rangeMessage;
+
+        const range = {
+            percentage
+        };
+        
+        const numberEvent = new CustomEvent("range", { detail: range });
         this.dispatchEvent(numberEvent);
     }
 }

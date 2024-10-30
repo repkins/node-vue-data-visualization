@@ -10,40 +10,53 @@ export class NumberGenerator extends EventEmitter
     constructor(random, setInterval)
     {
         super();
-        this.random = random;
-        this.setInterval = setInterval;
+        this._random = random;
+        this._setInterval = setInterval;
 
-        this.once('newListener', (evtName, listener) => {
-            if (evtName === 'number') {
-                this._onNumberFirstListener(listener);
-            }
-        });
+        this._rangeRatio = 0.30;
+
+        this._setInterval(this._generateNumber.bind(this), 1000);
+
+        this.on('newListener', this._onNewListener.bind(this));
     }
 
-    _onNumberFirstListener(listener) {
-        var firstNumberEntry = this._getRandomNumber();
-        listener(firstNumberEntry);
+    setRange(newRangeRatio)
+    {
+        this._rangeRatio = newRangeRatio;
+        this.emit('rangeRatio', newRangeRatio);
+    }
 
-        this.lastNumber = firstNumberEntry.value;
-
-        this.setInterval(this._generateNumber.bind(this), 1000);
+    _onNewListener(evtName, listener)
+    {
+        switch (evtName) {
+            case 'number': 
+                listener(this._lastNumberEntry);
+                break;
+            case 'rangeRatio':
+                listener(this._rangeRatio);
+                break;
+        }
     }
 
     _generateNumber() {
-        let newNumberEntry;
-        do {
-            newNumberEntry = this._getRandomNumber();
-        } 
-        while (Math.abs(newNumberEntry.value - this.lastNumber) > 30);
+        let newNumberEntry = this._getRandomNumber();
+
+        if (this._lastNumberEntry) {
+            let rationedRange = this._lastNumberEntry.value * this._rangeRatio;
+            while (Math.abs(newNumberEntry.value - this._lastNumberEntry.value) > rationedRange)
+            {
+                newNumberEntry = this._getRandomNumber();
+            } 
+        }
 
         this._emitNumber(newNumberEntry);
 
-        this.lastNumber = newNumberEntry.value;
+        this._lastNumberEntry = newNumberEntry;
     }
 
     _getRandomNumber()
     {
-        const randomNumber = this.random() * 100;
+        const randomNumber = this._random() * 100;
         const timestamp = Date.now();
 
         return {

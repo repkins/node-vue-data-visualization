@@ -12,10 +12,14 @@
         },
         data() {
             return {
-                data: []
+                data: [],
+                rangePercentage: null
             }
         },
-        methods: {
+        methods: {            
+            onNewRange(newRangePercentage) {
+                console.log(newRangePercentage);
+            },
             updateDataFromEvent(evt) {
                 const { value, date } = evt.detail;
 
@@ -28,21 +32,24 @@
                     this.data.shift()
                 }
             },
-            onNewRange(newRange) {
-                console.log(newRange);
+            updateRangeFromEvent(evt) {
+                const { percentage } = evt.detail;
+                this.rangePercentage = percentage;
             }
         },
         created() {
             this.dashboard.addEventListener('number', this.updateDataFromEvent)
+            this.dashboard.addEventListener('range', this.updateRangeFromEvent)
         },
         unmounted() {
             this.dashboard.removeEventListener('number', this.updateDataFromEvent)
+            this.dashboard.removeEventListener('range', this.updateRangeFromEvent)
         }
     }
 </script>
 <template>
     <h1 class="text-center mb-4">Data visualisation dashboard</h1>
-    <AppDashboardForm :current-range="30" @new-range="onNewRange"/>
+    <AppDashboardForm :current-range="rangePercentage" @new-range="onNewRange"/>
     <div>
         <AppChart :data/>
     </div>
