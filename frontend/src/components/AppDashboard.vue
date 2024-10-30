@@ -1,5 +1,5 @@
 <script>
-    import { ApiHostKey } from '@/keys';
+    import { DashboardKey } from '@/services/dashboard';
     import AppChart from './AppChart.vue'
 
     export default {
@@ -7,7 +7,7 @@
             AppChart
         },
         inject: {
-            apiHost: { from: ApiHostKey }
+            dashboard: { from: DashboardKey }
         },
         data() {
             return {
@@ -15,31 +15,24 @@
             }
         },
         methods: {
-            addDataPoint() {
-                this.data.push({ x: 23, y: 40 })
-            }
-        },
-        created() {
-            const socket = new WebSocket(`ws://${this.apiHost}`)
-            socket.addEventListener('error', () => {
-                console.error('Could not connect to API backend')
-            })
-            socket.addEventListener('message', evt => {
-                const {value, timestamp} = JSON.parse(evt.data)
+            updateDataFromEvent(evt) {
+                const { value, date } = evt.detail;
+
                 this.data.push({ 
-                    x: new Date(timestamp).toLocaleTimeString(), 
+                    x: date.toLocaleTimeString(), 
                     y: value 
                 })
 
                 if (this.data.length > 10) {
                     this.data.shift()
                 }
-            })
-
-            this.socket = socket
+            },
+        },
+        created() {
+            this.dashboard.addEventListener('number', this.updateDataFromEvent)
         },
         unmounted() {
-            this.socket.close()
+            this.dashboard.removeEventListener('number', this.updateDataFromEvent)
         }
     }
 </script>
@@ -47,8 +40,5 @@
     <h1 class="text-center">Data visualisation dashboard</h1>
     <div>
         <AppChart :data/>
-    </div>
-    <div>
-        <button class="btn btn-primary" @click="addDataPoint()">Btn</button>
     </div>
 </template>
