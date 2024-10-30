@@ -21,15 +21,20 @@
                 this.dashboard.updateRange(newRangePercentage);
             },
             updateDataFromEvent(evt) {
-                const { value, date } = evt.detail;
+                const numberEntries = evt.detail;
 
-                this.data.push({ 
-                    x: date.toLocaleTimeString(), 
-                    y: value 
-                })
+                const newDataPoints = numberEntries
+                    .map(({ value, date }) => ({ 
+                        x: date.toLocaleTimeString(), 
+                        y: value 
+                    }));
 
-                if (this.data.length > 10) {
-                    this.data.shift()
+                this.data.push(...newDataPoints);
+
+                const maxDataPoints = 15;
+
+                if (this.data.length > maxDataPoints) {
+                    this.data.splice(0, this.data.length - maxDataPoints);
                 }
             },
             updateRangeFromEvent(evt) {
@@ -38,11 +43,11 @@
             }
         },
         created() {
-            this.dashboard.addEventListener('number', this.updateDataFromEvent)
+            this.dashboard.addEventListener('numbers', this.updateDataFromEvent)
             this.dashboard.addEventListener('range', this.updateRangeFromEvent)
         },
         unmounted() {
-            this.dashboard.removeEventListener('number', this.updateDataFromEvent)
+            this.dashboard.removeEventListener('numbers', this.updateDataFromEvent)
             this.dashboard.removeEventListener('range', this.updateRangeFromEvent)
         }
     }

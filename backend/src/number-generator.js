@@ -29,8 +29,8 @@ export class NumberGenerator extends EventEmitter
     _onNewListener(evtName, listener)
     {
         switch (evtName) {
-            case 'number': 
-                listener(this._lastNumberEntry);
+            case 'numbers': 
+                listener([ this._lastNumberEntry ]);
                 break;
             case 'rangeRatio':
                 listener(this._rangeRatio);
@@ -67,6 +67,6 @@ export class NumberGenerator extends EventEmitter
 
     _emitNumber(numberEntry)
     {
-        this.emit('number', numberEntry);
+        this.emit('numbers', [ numberEntry ]);
     }
 }

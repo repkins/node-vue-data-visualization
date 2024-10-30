@@ -13,10 +13,10 @@ export class DashboardController
      */
     clientConnected(ws)
     {
-        const onGeneratedNumber = numberEntry => {
+        const onNumbers = numberEntries => {
             const wsMsg = {
-                type: 'number',
-                payload: numberEntry
+                type: 'numbers',
+                payload: numberEntries
             }
             this._sendMessage(ws, wsMsg);
         }
@@ -31,16 +31,16 @@ export class DashboardController
             this._sendMessage(ws, wsMsg);
         };
 
-        this._numberGenerator.on('number', onGeneratedNumber);
+        this._numberGenerator.on('numbers', onNumbers);
         this._numberGenerator.on('rangeRatio', onRangeRatio);
 
         ws.on('error', () => {
-            this._numberGenerator.off('number', onGeneratedNumber);
+            this._numberGenerator.off('numbers', onNumbers);
             this._numberGenerator.off('rangeRatio', onRangeRatio);
         });
 
         ws.on('close', () => {
-            this._numberGenerator.off('number', onGeneratedNumber);
+            this._numberGenerator.off('numbers', onNumbers);
             this._numberGenerator.off('rangeRatio', onRangeRatio);
         });
 

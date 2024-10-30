@@ -34,8 +34,8 @@ export class Dashboard extends EventTarget {
     _handleSocketMessage(evt) {
         const msgData = JSON.parse(evt.data);
         switch (msgData.type) {
-            case 'number': 
-                this._handleNumberMessage(msgData.payload);
+            case 'numbers': 
+                this._handleNumbersMessage(msgData.payload);
                 break;
             case 'range':
                 this._handleRangeMessage(msgData.payload);
@@ -43,12 +43,10 @@ export class Dashboard extends EventTarget {
         }
     }
 
-    _handleNumberMessage(numberMessage) { 
-        const { value, timestamp } = numberMessage;
+    _handleNumbersMessage(numbersMessage) {
+        const numberEntries = numbersMessage.map(({ value, timestamp }) => ({ value, date: new Date(timestamp) }))
 
-        const numberEntry = { value, date: new Date(timestamp) };
-
-        const numberEvent = new CustomEvent("number", { detail: numberEntry });
+        const numberEvent = new CustomEvent("numbers", { detail: numberEntries });
         this.dispatchEvent(numberEvent);
     }
 
