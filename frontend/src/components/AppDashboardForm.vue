@@ -18,13 +18,13 @@
 <template>
     <form class="row g-3 justify-content-center align-items-end" @submit.prevent="onSubmit">
         <div class="col-auto">
-            <label for="inputRangePercentage" class="form-label">Current Range (%)</label>
-            <input type="number" class="form-control" id="inputRangePercentage" disabled :value="currentRange">
+            <label for="currentInputRange" class="form-label">Current Range (%)</label>
+            <input type="number" class="form-control" id="currentInputRange" disabled :value="currentRange">
         </div>
 
         <div class="col-auto">
-            <label for="inputRangePercentage" class="form-label">New Range (%)</label>
-            <input type="number" required class="form-control" id="inputRangePercentage" v-model="newRange">
+            <label for="newInputRange" class="form-label">New Range (%)</label>
+            <input type="number" required class="form-control" id="newInputRange" v-model="newRange">
         </div>
 
         <div class="col-auto">
