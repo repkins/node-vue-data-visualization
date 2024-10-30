@@ -43,6 +43,18 @@ export class DashboardController
             this._numberGenerator.off('number', onGeneratedNumber);
             this._numberGenerator.off('rangeRatio', onRangeRatio);
         });
+
+        ws.on('message', this._onMessage.bind(this));
+    }
+
+    _onMessage(wsMsg)
+    {
+        const msg = JSON.parse(wsMsg);
+        switch (msg.type) {
+            case 'newRange': 
+                this._numberGenerator.updateRange(msg.payload.percentage / 100);
+                break;
+        }
     }
 
     _sendMessage(ws, msg)

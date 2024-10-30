@@ -16,9 +16,9 @@
                 rangePercentage: null
             }
         },
-        methods: {            
+        methods: {
             onNewRange(newRangePercentage) {
-                console.log(newRangePercentage);
+                this.dashboard.updateRange(newRangePercentage);
             },
             updateDataFromEvent(evt) {
                 const { value, date } = evt.detail;

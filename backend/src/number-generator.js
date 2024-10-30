@@ -20,7 +20,7 @@ export class NumberGenerator extends EventEmitter
         this.on('newListener', this._onNewListener.bind(this));
     }
 
-    setRange(newRangeRatio)
+    updateRange(newRangeRatio)
     {
         this._rangeRatio = newRangeRatio;
         this.emit('rangeRatio', newRangeRatio);

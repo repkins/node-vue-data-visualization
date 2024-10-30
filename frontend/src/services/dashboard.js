@@ -8,6 +8,16 @@ export class Dashboard extends EventTarget {
         this.socket = this._createSocket();
     }
 
+    updateRange(newRangePercentage) {
+        const msg = {
+            type: "newRange",
+            payload: {
+                percentage: newRangePercentage
+            }
+        };
+        this._sendMessage(msg)
+    }
+
     _createSocket() {
         const socket = new WebSocket(`ws://${this.apiHost}`);
 
@@ -51,5 +61,9 @@ export class Dashboard extends EventTarget {
         
         const numberEvent = new CustomEvent("range", { detail: range });
         this.dispatchEvent(numberEvent);
+    }
+
+    _sendMessage(msg) {
+        this.socket.send(JSON.stringify(msg));
     }
 }
