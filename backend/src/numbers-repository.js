@@ -43,7 +43,7 @@ export class NumbersRepository
 
         this._numberEntries.push(numberEntry);
 
-        this._writeNumbersAsync();
+        this._writeNumbers();
     }
 
     async removeFirstNumbers(count)
@@ -57,21 +57,25 @@ export class NumbersRepository
     {
         if (!this._numberEntries)
         {
-            await this._readNumbersAsync();
+            await this._readNumbers();
         }
     }
 
-    async _readNumbersAsync()
+    async _readNumbers()
     {
         try {
             const content = await fs.readFile(NumbersFilePath, { encoding: 'utf8' });
             this._numberEntries = JSON.parse(content);
         } catch (err) {
-            console.log(err);
+            switch (err.code) {
+                case 'ENOENT':
+                    console.log(`File at ${NumbersFilePath} does not exist`);
+            }
+            this._numberEntries = [];
         }
     }
 
-    async _writeNumbersAsync()
+    async _writeNumbers()
     {
         try {
             const content = JSON.stringify(this._numberEntries);
