@@ -22,7 +22,14 @@ export class Dashboard extends EventTarget {
     }
 
     _handleSocketMessage(evt) {
-        const { value, timestamp } = JSON.parse(evt.data);
+        const msgData = JSON.parse(evt.data);
+        if (msgData.type === 'number') {
+            this._handleNumberMessage(msgData.payload);
+        }
+    }
+
+    _handleNumberMessage(numberMessage) { 
+        const { value, timestamp } = numberMessage;
 
         const numberEntry = { value, date: new Date(timestamp) };
 

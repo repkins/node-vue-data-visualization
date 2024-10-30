@@ -15,7 +15,11 @@ export class DashboardController
     {
         const onGeneratedNumber = numberEntry =>
         {
-            ws.send(JSON.stringify(numberEntry));
+            const wsMsg = {
+                type: 'number',
+                payload: numberEntry
+            }
+            ws.send(JSON.stringify(wsMsg));
         }
 
         this._numberGenerator.on('number', onGeneratedNumber);
