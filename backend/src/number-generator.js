@@ -22,9 +22,8 @@ export class NumberGenerator extends EventEmitter
 
         this._rangeRatio = RangeRatio;
 
-        this._setInterval(this._generateNumber.bind(this), IntervalSeconds * 1000);
-
-        this.on('newListener', this._onNewListener.bind(this));
+        this._numbersRepository.loadNumberEntries()
+            .then(this._setup.bind(this));
     }
 
     updateRange(newRangeRatio)
@@ -33,11 +32,18 @@ export class NumberGenerator extends EventEmitter
         this.emit('rangeRatio', newRangeRatio);
     }
 
+    _setup()
+    {
+        this._setInterval(this._generateNumber.bind(this), IntervalSeconds * 1000);
+
+        this.on('newListener', this._onNewListener.bind(this));
+    }
+
     _onNewListener(evtName, listener)
     {
         switch (evtName) {
             case 'numbers': 
-                this._numbersRepository.getNumberEntries().then(listener);
+                listener(this._numbersRepository.getNumberEntries());
                 break;
             case 'rangeRatio':
                 listener(this._rangeRatio);
@@ -45,11 +51,11 @@ export class NumberGenerator extends EventEmitter
         }
     }
 
-    async _generateNumber() {
+    _generateNumber() {
         let newNumberEntry = this._getRandomNumber();
 
-        if (await this._numbersRepository.hasNumberEntries()) {
-            const lastNumberEntry = await this._numbersRepository.getLastNumberEntry();
+        if (this._numbersRepository.hasNumberEntries()) {
+            const lastNumberEntry =  this._numbersRepository.getLastNumberEntry();
 
             let rationedRange = lastNumberEntry.value * this._rangeRatio;
             while (Math.abs(newNumberEntry.value - lastNumberEntry.value) > rationedRange)
@@ -59,11 +65,11 @@ export class NumberGenerator extends EventEmitter
         }
 
         this._emitNumber(newNumberEntry);
-        await this._numbersRepository.addNumberEntry(newNumberEntry);
+        this._numbersRepository.addNumberEntry(newNumberEntry);
 
-        const numberEntriesCount = await this._numbersRepository.getNumberEntriesCount();
+        const numberEntriesCount = this._numbersRepository.getNumberEntriesCount();
         if (numberEntriesCount > MaxNumbers) {
-            await this._numbersRepository.removeFirstNumbers(numberEntriesCount - MaxNumbers);
+            this._numbersRepository.removeFirstNumbers(numberEntriesCount - MaxNumbers);
         }
     }
 

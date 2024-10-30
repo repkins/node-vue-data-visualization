@@ -6,59 +6,44 @@ export class NumbersRepository
 {
     constructor()
     {
-        this._numberEntries = null;
+        this._numberEntries = [];
     }
 
-    async hasNumberEntries()
+    async loadNumberEntries()
     {
-        await this._ensureNumbersLoaded();
+        await this._readNumbers();
+    }
 
+    hasNumberEntries()
+    {
         return this._numberEntries.length > 0;
     }
 
-    async getNumberEntriesCount()
+    getNumberEntriesCount()
     {
-        await this._ensureNumbersLoaded();
-
         return this._numberEntries.length;
     }
 
-    async getNumberEntries()
+    getNumberEntries()
     {
-        await this._ensureNumbersLoaded();
-
         return this._numberEntries;
     }
 
-    async getLastNumberEntry()
+    getLastNumberEntry()
     {
-        await this._ensureNumbersLoaded();
-
         return this._numberEntries[this._numberEntries.length-1];
     }
 
-    async addNumberEntry(numberEntry)
+    addNumberEntry(numberEntry)
     {
-        await this._ensureNumbersLoaded();
-
         this._numberEntries.push(numberEntry);
 
         this._writeNumbers();
     }
 
-    async removeFirstNumbers(count)
+    removeFirstNumbers(count)
     {
-        await this._ensureNumbersLoaded();
-
         this._numberEntries.splice(0, count);
-    }
-
-    async _ensureNumbersLoaded()
-    {
-        if (!this._numberEntries)
-        {
-            await this._readNumbers();
-        }
     }
 
     async _readNumbers()
