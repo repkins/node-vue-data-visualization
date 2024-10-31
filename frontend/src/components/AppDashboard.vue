@@ -21,6 +21,16 @@
             onNewRange(newRangePercentage) {
                 this.dashboard.updateRange(newRangePercentage);
             },
+            _addDashboardListener(evtName, listener) {
+                this.dashboard.addEventListener(evtName, listener)
+                this._dashboardListeners.push({ evtName, listener });
+            },
+            _removeDashboardListeners() {
+                for (const { evtName, listener } in this._dashboardListeners) {
+                    this.dashboard.removeEventListener(evtName, listener);
+                }
+                this._dashboardListeners.length = 0;
+            },
             updateDataFromEvent(evt) {
                 const numberEntries = evt.detail;
 
@@ -50,16 +60,14 @@
             }
         },
         created() {
-            this.dashboard.addEventListener('numbers', this.updateDataFromEvent)
-            this.dashboard.addEventListener('range', this.updateRangeFromEvent)
-            this.dashboard.addEventListener('connected', this.updateConnectedFromEvent)
-            this.dashboard.addEventListener('disconnected', this.updateDisconnectedFromEvent)
+            this._dashboardListeners = [];
+            this._addDashboardListener('numbers', this.updateDataFromEvent)
+            this._addDashboardListener('range', this.updateRangeFromEvent)
+            this._addDashboardListener('connected', this.updateConnectedFromEvent)
+            this._addDashboardListener('disconnected', this.updateDisconnectedFromEvent)
         },
         unmounted() {
-            this.dashboard.removeEventListener('numbers', this.updateDataFromEvent)
-            this.dashboard.removeEventListener('range', this.updateRangeFromEvent)
-            this.dashboard.removeEventListener('connected', this.updateConnectedFromEvent)
-            this.dashboard.removeEventListener('disconnected', this.updateDisconnectedFromEvent)
+            this._removeDashboardListeners();
         }
     }
 </script>
