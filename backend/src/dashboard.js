@@ -13,16 +13,15 @@ export class DashboardController
      */
     clientConnected(ws)
     {
-        const onNumbers = numberEntries => {
+        function onNumbers(numberEntries) {
             const wsMsg = {
                 type: 'numbers',
                 payload: numberEntries
             }
             this._sendMessage(ws, wsMsg);
         }
-        this._registerHandler('numbers', onNumbers, ws);
 
-        const onRangeRatio = rangeRatio => {
+        function onRangeRatio(rangeRatio) {
             const wsMsg = {
                 type: 'range',
                 payload: {
@@ -31,9 +30,8 @@ export class DashboardController
             }
             this._sendMessage(ws, wsMsg);
         };
-        this._registerHandler('rangeRatio', onRangeRatio, ws);
 
-        const onDataLoaded = date => {
+        function onDataLoaded(date) {
             const wsMsg = {
                 type: 'dataLoaded',
                 payload: {
@@ -42,6 +40,9 @@ export class DashboardController
             }
             this._sendMessage(ws, wsMsg);
         }
+
+        this._registerHandler('numbers', onNumbers, ws);
+        this._registerHandler('rangeRatio', onRangeRatio, ws);
         this._registerHandler('dataLoaded', onDataLoaded, ws);
 
         ws.on('message', this._onMessage.bind(this));
