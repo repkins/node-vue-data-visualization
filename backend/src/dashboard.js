@@ -20,6 +20,7 @@ export class DashboardController
             }
             this._sendMessage(ws, wsMsg);
         }
+        this._registerHandler('numbers', onNumbers, ws);
 
         const onRangeRatio = rangeRatio => {
             const wsMsg = {
@@ -30,21 +31,20 @@ export class DashboardController
             }
             this._sendMessage(ws, wsMsg);
         };
-
-        this._numberGenerator.on('numbers', onNumbers);
-        this._numberGenerator.on('rangeRatio', onRangeRatio);
-
-        ws.on('error', () => {
-            this._numberGenerator.off('numbers', onNumbers);
-            this._numberGenerator.off('rangeRatio', onRangeRatio);
-        });
-
-        ws.on('close', () => {
-            this._numberGenerator.off('numbers', onNumbers);
-            this._numberGenerator.off('rangeRatio', onRangeRatio);
-        });
+        this._registerHandler('rangeRatio', onRangeRatio, ws);
 
         ws.on('message', this._onMessage.bind(this));
+    }
+
+    _registerHandler(evtName, handler, ws)
+    {
+        this._numberGenerator.on(evtName, handler);
+        ws.on('error', () => {
+            this._numberGenerator.off(evtName, handler);
+        });
+        ws.on('close', () => {
+            this._numberGenerator.off(evtName, handler);
+        });
     }
 
     _onMessage(wsMsg)
