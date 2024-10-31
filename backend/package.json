@@ -7,16 +7,17 @@
   "type": "module",
   "scripts": {
     "start": "node ./src/server.js",
-    "nodemon": "nodemon --watch src ./src/server.js"
+    "dev": "nodemon --watch src ./src/server.js",
+    "lint": "eslint ."
   },
   "dependencies": {
     "dotenv": "^16.4.5",
     "ws": "^8.18.0"
   },
   "devDependencies": {
-    "@eslint/js": "^9.13.0",
-    "eslint": "^9.13.0",
-    "globals": "^15.11.0",
+    "eslint": "^8.57.1",
+    "eslint-plugin-import": "^2.31.0",
+    "eslint-config-airbnb-base": "^15.0.0",
     "nodemon": "^3.1.7"
   }
 }
