@@ -5,35 +5,19 @@ export default class DashboardController {
 
   clientConnected(ws) {
     function onNumbers(numberEntries) {
-      const wsMsg = {
-        type: 'numbers',
-        payload: numberEntries,
-      };
-      this.constructor._sendMessage(ws, wsMsg);
+      this.constructor._sendMessage(ws, 'numbers', numberEntries);
     }
 
-    function onRangeRatio(rangeRatio) {
-      const wsMsg = {
-        type: 'range',
-        payload: {
-          percentage: rangeRatio * 100,
-        },
-      };
-      this.constructor._sendMessage(ws, wsMsg);
+    function onRange(range) {
+      this.constructor._sendMessage(ws, 'range', range);
     }
 
-    function onDataLoaded(date) {
-      const wsMsg = {
-        type: 'dataLoaded',
-        payload: {
-          date: date.toISOString(),
-        },
-      };
-      this.constructor._sendMessage(ws, wsMsg);
+    function onDataLoaded(loadedData) {
+      this.constructor._sendMessage(ws, 'dataLoaded', loadedData);
     }
 
     this._registerHandler('numbers', onNumbers.bind(this), ws);
-    this._registerHandler('rangeRatio', onRangeRatio.bind(this), ws);
+    this._registerHandler('range', onRange.bind(this), ws);
     this._registerHandler('dataLoaded', onDataLoaded.bind(this), ws);
 
     ws.on('message', this._onMessage.bind(this));
@@ -53,14 +37,15 @@ export default class DashboardController {
     const msg = JSON.parse(wsMsg);
     switch (msg.type) {
       case 'newRange':
-        this._numberGenerator.updateRange(msg.payload.percentage / 100);
+        this._numberGenerator.updateRange(msg.payload);
         break;
       default:
         break;
     }
   }
 
-  static _sendMessage(ws, msg) {
+  static _sendMessage(ws, type, payload) {
+    const msg = { type, payload };
     ws.send(JSON.stringify(msg));
   }
 }

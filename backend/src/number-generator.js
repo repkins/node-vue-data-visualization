@@ -17,9 +17,9 @@ export default class NumberGenerator extends EventEmitter {
       .then(this._onLoadNumbers.bind(this));
   }
 
-  updateRange(newRangeRatio) {
-    this._rangeRatio = newRangeRatio;
-    this.emit('rangeRatio', newRangeRatio);
+  updateRange(newRange) {
+    this._rangeRatio = newRange.percentage / 100;
+    this.emit('range', this._getRange());
   }
 
   _onLoadNumbers() {
@@ -35,11 +35,11 @@ export default class NumberGenerator extends EventEmitter {
       case 'numbers':
         listener(this._numbersRepository.getNumberEntries());
         break;
-      case 'rangeRatio':
-        listener(this._rangeRatio);
+      case 'range':
+        listener(this._getRange());
         break;
       case 'dataLoaded':
-        listener(this._dateNumbersLoaded);
+        listener(this._getDataLoaded());
         break;
       default:
         break;
@@ -74,6 +74,18 @@ export default class NumberGenerator extends EventEmitter {
     return {
       value: randomNumber,
       timestamp,
+    };
+  }
+
+  _getRange() {
+    return {
+      percentage: this._rangeRatio * 100,
+    };
+  }
+
+  _getDataLoaded() {
+    return {
+      date: this._dateNumbersLoaded.toISOString(),
     };
   }
 

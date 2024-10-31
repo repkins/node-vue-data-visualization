@@ -2,7 +2,7 @@ import { WebSocketServer } from 'ws';
 import 'dotenv/config';
 
 import NumberGenerator from './number-generator.js';
-import DashboardController from './dashboard.js';
+import DashboardController from './dashboard-controller.js';
 import NumbersRepository from './numbers-repository.js';
 
 const webSocketServerOptions = {
