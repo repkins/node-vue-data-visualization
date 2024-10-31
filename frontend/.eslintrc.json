@@ -1,0 +1,10 @@
+{
+  "extends": [
+    "plugin:vue/vue3-essential",
+    "airbnb-base"
+  ],
+  "parserOptions": {
+    "ecmaVersion": 2020
+  },
+  "ignorePatterns": ["/*", "!/src"]
+}

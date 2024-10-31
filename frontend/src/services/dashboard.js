@@ -1,90 +1,95 @@
 export const DashboardKey = Symbol;
 
 export class Dashboard extends EventTarget {
-    constructor(apiHost) {
-        super();
+  constructor(apiHost) {
+    super();
 
-        this.apiHost = apiHost;
-        this._createSocket();
+    this.apiHost = apiHost;
+    this.createSocket();
+  }
+
+  updateRange(newRangePercentage) {
+    const msg = {
+      type: 'newRange',
+      payload: {
+        percentage: newRangePercentage,
+      },
+    };
+    this.sendMessage(msg);
+  }
+
+  createSocket() {
+    const socket = new WebSocket(`ws://${this.apiHost}`);
+
+    socket.addEventListener('open', this.handleSocketOpen.bind(this));
+    socket.addEventListener('error', this.handleSocketError.bind(this));
+    socket.addEventListener('close', this.handleSocketClose.bind(this));
+    socket.addEventListener('message', this.handleSocketMessage.bind(this));
+
+    this.socket = socket;
+  }
+
+  handleSocketOpen() {
+    const connectedEvent = new CustomEvent('connected');
+    this.dispatchEvent(connectedEvent);
+  }
+
+  static handleSocketError() {
+  }
+
+  handleSocketClose() {
+    const disconnectedEvent = new CustomEvent('disconnected');
+    this.dispatchEvent(disconnectedEvent);
+
+    this.createSocket();
+  }
+
+  handleSocketMessage(evt) {
+    const msgData = JSON.parse(evt.data);
+    switch (msgData.type) {
+      case 'numbers':
+        this.handleNumbersMessage(msgData.payload);
+        break;
+      case 'range':
+        this.handleRangeMessage(msgData.payload);
+        break;
+      case 'dataLoaded':
+        this.handleDataLoadedMessage(msgData.payload);
+        break;
+      default:
+        break;
     }
+  }
 
-    updateRange(newRangePercentage) {
-        const msg = {
-            type: "newRange",
-            payload: {
-                percentage: newRangePercentage
-            }
-        };
-        this._sendMessage(msg)
-    }
+  handleNumbersMessage(numbersMessage) {
+    const numberEntries = numbersMessage.map(({ value, timestamp }) => ({
+      value,
+      date: new Date(timestamp),
+    }));
 
-    _createSocket() {
-        const socket = new WebSocket(`ws://${this.apiHost}`);
+    const numberEvent = new CustomEvent('numbers', { detail: numberEntries });
+    this.dispatchEvent(numberEvent);
+  }
 
-        socket.addEventListener('open', this._handleSocketOpen.bind(this));
-        socket.addEventListener('error', this._handleSocketError.bind(this));
-        socket.addEventListener('close', this._handleSocketClose.bind(this));
-        socket.addEventListener('message', this._handleSocketMessage.bind(this));
+  handleRangeMessage(rangeMessage) {
+    const { percentage } = rangeMessage;
 
-        this._socket = socket;
-    }
+    const range = { percentage };
 
-    _handleSocketOpen() {
-        const connectedEvent = new CustomEvent("connected");
-        this.dispatchEvent(connectedEvent);
-    }
+    const numberEvent = new CustomEvent('range', { detail: range });
+    this.dispatchEvent(numberEvent);
+  }
 
-    _handleSocketError(err) {
-        console.error('Could not connect to API backend', err);
-    }
+  handleDataLoadedMessage(dataLoadedMessage) {
+    const dataLoaded = {
+      date: new Date(dataLoadedMessage.date),
+    };
 
-    _handleSocketClose() {
-        const disconnectedEvent = new CustomEvent("disconnected");
-        this.dispatchEvent(disconnectedEvent);
+    const dataLoadedEvent = new CustomEvent('dataLoaded', { detail: dataLoaded });
+    this.dispatchEvent(dataLoadedEvent);
+  }
 
-        this._createSocket();
-    }
-
-    _handleSocketMessage(evt) {
-        const msgData = JSON.parse(evt.data);
-        switch (msgData.type) {
-            case 'numbers': 
-                this._handleNumbersMessage(msgData.payload);
-                break;
-            case 'range':
-                this._handleRangeMessage(msgData.payload);
-                break;
-            case 'dataLoaded':
-                this._handleDataLoadedMessage(msgData.payload);
-        }
-    }
-
-    _handleNumbersMessage(numbersMessage) {
-        const numberEntries = numbersMessage.map(({ value, timestamp }) => ({ value, date: new Date(timestamp) }))
-
-        const numberEvent = new CustomEvent("numbers", { detail: numberEntries });
-        this.dispatchEvent(numberEvent);
-    }
-
-    _handleRangeMessage(rangeMessage) { 
-        const { percentage } = rangeMessage;
-
-        const range = { percentage };
-        
-        const numberEvent = new CustomEvent("range", { detail: range });
-        this.dispatchEvent(numberEvent);
-    }
-
-    _handleDataLoadedMessage(dataLoadedMessage) {
-        const dataLoaded = { 
-            date: new Date(dataLoadedMessage.date)
-        };
-
-        const dataLoadedEvent = new CustomEvent("dataLoaded", { detail: dataLoaded });
-        this.dispatchEvent(dataLoadedEvent);
-    }
-
-    _sendMessage(msg) {
-        this._socket.send(JSON.stringify(msg));
-    }
+  sendMessage(msg) {
+    this.socket.send(JSON.stringify(msg));
+  }
 }
