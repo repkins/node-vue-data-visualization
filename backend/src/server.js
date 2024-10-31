@@ -36,8 +36,4 @@ function onSocketConnection(ws)
     });
 
     dashboardController.clientConnected(ws);
-
-    ws.on('message', msg => {
-        console.log('received: %s', msg);
-    });
 }
