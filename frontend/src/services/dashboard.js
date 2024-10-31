@@ -5,7 +5,7 @@ export class Dashboard extends EventTarget {
         super();
 
         this.apiHost = apiHost;
-        this.socket = this._createSocket();
+        this._createSocket();
     }
 
     updateRange(newRangePercentage) {
@@ -26,7 +26,7 @@ export class Dashboard extends EventTarget {
         socket.addEventListener('close', this._handleSocketClose.bind(this));
         socket.addEventListener('message', this._handleSocketMessage.bind(this));
 
-        return socket;
+        this._socket = socket;
     }
 
     _handleSocketOpen() {
@@ -85,6 +85,6 @@ export class Dashboard extends EventTarget {
     }
 
     _sendMessage(msg) {
-        this.socket.send(JSON.stringify(msg));
+        this._socket.send(JSON.stringify(msg));
     }
 }
