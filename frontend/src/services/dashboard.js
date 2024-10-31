@@ -22,7 +22,6 @@ export class Dashboard extends EventTarget {
     const socket = new WebSocket(`ws://${this.apiHost}`);
 
     socket.addEventListener('open', this.handleSocketOpen.bind(this));
-    socket.addEventListener('error', this.handleSocketError.bind(this));
     socket.addEventListener('close', this.handleSocketClose.bind(this));
     socket.addEventListener('message', this.handleSocketMessage.bind(this));
 
@@ -32,9 +31,6 @@ export class Dashboard extends EventTarget {
   handleSocketOpen() {
     const connectedEvent = new CustomEvent('connected');
     this.dispatchEvent(connectedEvent);
-  }
-
-  static handleSocketError() {
   }
 
   handleSocketClose() {

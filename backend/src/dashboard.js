@@ -9,7 +9,7 @@ export default class DashboardController {
         type: 'numbers',
         payload: numberEntries,
       };
-      this._sendMessage(ws, wsMsg);
+      this.constructor._sendMessage(ws, wsMsg);
     }
 
     function onRangeRatio(rangeRatio) {
@@ -19,7 +19,7 @@ export default class DashboardController {
           percentage: rangeRatio * 100,
         },
       };
-      this._sendMessage(ws, wsMsg);
+      this.constructor._sendMessage(ws, wsMsg);
     }
 
     function onDataLoaded(date) {
@@ -29,12 +29,12 @@ export default class DashboardController {
           date: date.toISOString(),
         },
       };
-      this._sendMessage(ws, wsMsg);
+      this.constructor._sendMessage(ws, wsMsg);
     }
 
-    this._registerHandler('numbers', onNumbers, ws);
-    this._registerHandler('rangeRatio', onRangeRatio, ws);
-    this._registerHandler('dataLoaded', onDataLoaded, ws);
+    this._registerHandler('numbers', onNumbers.bind(this), ws);
+    this._registerHandler('rangeRatio', onRangeRatio.bind(this), ws);
+    this._registerHandler('dataLoaded', onDataLoaded.bind(this), ws);
 
     ws.on('message', this._onMessage.bind(this));
   }
