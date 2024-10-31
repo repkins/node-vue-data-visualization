@@ -3,6 +3,8 @@
     import AppChart from './AppChart.vue'
     import AppDashboardForm from './AppDashboardForm.vue';
 
+    const MaxDataPoints = 15;
+
     export default {
         components: {
             AppChart, AppDashboardForm
@@ -42,10 +44,8 @@
 
                 this.data.push(...newDataPoints);
 
-                const maxDataPoints = 15;
-
-                if (this.data.length > maxDataPoints) {
-                    this.data.splice(0, this.data.length - maxDataPoints);
+                if (this.data.length > MaxDataPoints) {
+                    this.data.splice(0, this.data.length - MaxDataPoints);
                 }
             },
             updateRangeFromEvent(evt) {
@@ -61,10 +61,12 @@
         },
         created() {
             this._dashboardListeners = [];
-            this._addDashboardListener('numbers', this.updateDataFromEvent)
-            this._addDashboardListener('range', this.updateRangeFromEvent)
-            this._addDashboardListener('connected', this.updateConnectedFromEvent)
-            this._addDashboardListener('disconnected', this.updateDisconnectedFromEvent)
+        },
+        mounted() {
+            this._addDashboardListener('numbers', this.updateDataFromEvent);
+            this._addDashboardListener('range', this.updateRangeFromEvent);
+            this._addDashboardListener('connected', this.updateConnectedFromEvent);
+            this._addDashboardListener('disconnected', this.updateDisconnectedFromEvent);
         },
         unmounted() {
             this._removeDashboardListeners();
