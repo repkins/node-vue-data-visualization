@@ -18,7 +18,7 @@
                     ticks: {
                         source: 'data',
                         callback: function(value) {
-                            return new Date(value).toLocaleTimeString();
+                            return new Date(value).toLocaleTimeString('lv-LV');
                         }
                     }
                 },
