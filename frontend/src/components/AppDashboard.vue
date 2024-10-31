@@ -20,19 +20,32 @@
                 dateLoaded: null
             }
         },
+        created() {
+            this.dashboardListeners = [];
+        },
+        mounted() {
+            this.addDashboardListener('numbers', this.updateDataFromEvent);
+            this.addDashboardListener('range', this.updateRangeFromEvent);
+            this.addDashboardListener('connected', this.updateConnectedFromEvent);
+            this.addDashboardListener('disconnected', this.updateDisconnectedFromEvent);
+            this.addDashboardListener('dataLoaded', this.updateDateLoadedFromEvent);
+        },
+        unmounted() {
+            this.removeDashboardListeners();
+        },
         methods: {
             onNewRange(newRangePercentage) {
                 this.dashboard.updateRange(newRangePercentage);
             },
-            _addDashboardListener(evtName, listener) {
+            addDashboardListener(evtName, listener) {
                 this.dashboard.addEventListener(evtName, listener)
-                this._dashboardListeners.push({ evtName, listener });
+                this.dashboardListeners.push({ evtName, listener });
             },
-            _removeDashboardListeners() {
-                for (const { evtName, listener } in this._dashboardListeners) {
+            removeDashboardListeners() {
+                for (const { evtName, listener } in this.dashboardListeners) {
                     this.dashboard.removeEventListener(evtName, listener);
                 }
-                this._dashboardListeners.length = 0;
+                this.dashboardListeners.length = 0;
             },
             updateDataFromEvent(evt) {
                 const numberEntries = evt.detail;
@@ -63,19 +76,6 @@
                 const { date } = evt.detail;
                 this.dateLoaded = date.toLocaleTimeString('lv-LV');
             }
-        },
-        created() {
-            this._dashboardListeners = [];
-        },
-        mounted() {
-            this._addDashboardListener('numbers', this.updateDataFromEvent);
-            this._addDashboardListener('range', this.updateRangeFromEvent);
-            this._addDashboardListener('connected', this.updateConnectedFromEvent);
-            this._addDashboardListener('disconnected', this.updateDisconnectedFromEvent);
-            this._addDashboardListener('dataLoaded', this.updateDateLoadedFromEvent);
-        },
-        unmounted() {
-            this._removeDashboardListeners();
         }
     }
 </script>
