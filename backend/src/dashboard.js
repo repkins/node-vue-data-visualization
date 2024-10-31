@@ -33,6 +33,17 @@ export class DashboardController
         };
         this._registerHandler('rangeRatio', onRangeRatio, ws);
 
+        const onDataLoaded = date => {
+            const wsMsg = {
+                type: 'dataLoaded',
+                payload: {
+                    date: date.toISOString()
+                }
+            }
+            this._sendMessage(ws, wsMsg);
+        }
+        this._registerHandler('dataLoaded', onDataLoaded, ws);
+
         ws.on('message', this._onMessage.bind(this));
     }
 

@@ -54,6 +54,8 @@ export class Dashboard extends EventTarget {
             case 'range':
                 this._handleRangeMessage(msgData.payload);
                 break;
+            case 'dataLoaded':
+                this._handleDataLoadedMessage(msgData.payload);
         }
     }
 
@@ -67,12 +69,19 @@ export class Dashboard extends EventTarget {
     _handleRangeMessage(rangeMessage) { 
         const { percentage } = rangeMessage;
 
-        const range = {
-            percentage
-        };
+        const range = { percentage };
         
         const numberEvent = new CustomEvent("range", { detail: range });
         this.dispatchEvent(numberEvent);
+    }
+
+    _handleDataLoadedMessage(dataLoadedMessage) {
+        const dataLoaded = { 
+            date: new Date(dataLoadedMessage.date)
+        };
+
+        const dataLoadedEvent = new CustomEvent("dataLoaded", { detail: dataLoaded });
+        this.dispatchEvent(dataLoadedEvent);
     }
 
     _sendMessage(msg) {

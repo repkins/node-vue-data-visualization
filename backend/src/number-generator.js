@@ -23,7 +23,7 @@ export class NumberGenerator extends EventEmitter
         this._rangeRatio = RangeRatio;
 
         this._numbersRepository.loadNumberEntries()
-            .then(this._setup.bind(this));
+            .then(this._onLoadNumbers.bind(this));
     }
 
     updateRange(newRangeRatio)
@@ -32,8 +32,10 @@ export class NumberGenerator extends EventEmitter
         this.emit('rangeRatio', newRangeRatio);
     }
 
-    _setup()
+    _onLoadNumbers()
     {
+        this._dateNumbersLoaded = new Date();
+
         this._setInterval(this._generateNumber.bind(this), IntervalSeconds * 1000);
 
         this.on('newListener', this._onNewListener.bind(this));
@@ -47,6 +49,9 @@ export class NumberGenerator extends EventEmitter
                 break;
             case 'rangeRatio':
                 listener(this._rangeRatio);
+                break;
+            case 'dataLoaded':
+                listener(this._dateNumbersLoaded);
                 break;
         }
     }
