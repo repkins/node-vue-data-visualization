@@ -18,7 +18,7 @@
     npm i
     npm run dev
 
-  3. Otrā termināli virzīties uz apakšdirektoriju `./backend` un izpildīt sekojošas komandas:
+  3. Otrā terminālī virzīties uz apakšdirektoriju `./backend` un izpildīt sekojošas komandas:
 
     npm i
     npm run dev
